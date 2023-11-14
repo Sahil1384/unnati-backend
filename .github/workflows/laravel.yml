@@ -1,9 +1,10 @@
-name: CICD for larvel  
+name: CICD for Laravel
 
 on:
   push:
     branches:
       - main
+
 jobs:
   run-backend-on-ec2:
     name: Deploy backend
@@ -24,17 +25,18 @@ jobs:
 
       - name: SSH to instance
         env:
-            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            HOSTNAME: ${{ secrets.SSH_HOST }}
-            USER_NAME: ${{secrets.USER_NAME}}
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          HOSTNAME: ${{ secrets.SSH_HOST }}
+          USER_NAME: ${{ secrets.USER_NAME }}
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > my-ssh-key.pem
-          chmod 600 my-ssh-key.pem
-          ssh -o StrictHostKeyChecking=no -i my-ssh-key.pem ${{ secrets.USER_NAME }}@${HOSTNAME} '
+          set -e
+
+          echo "$PRIVATE_KEY" > "$HOME/my-ssh-key.pem"
+          ssh -o StrictHostKeyChecking=no -i "$HOME/my-ssh-key.pem" "$USER_NAME@$HOSTNAME" '
               cd /home/ubuntu/ &&
               git clone https://github.com/Sahil1384/unnati-backend.git &&
               cd /home/ubuntu/unnati-backend &&
-              echo "Installing Dependencies"
+              echo "Installing Dependencies" &&
               composer install --no-interaction --optimize-autoloader --no-dev &&
               php artisan key:generate &&
               php artisan optimize:clear &&

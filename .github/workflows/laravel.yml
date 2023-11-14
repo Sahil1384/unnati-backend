@@ -1,4 +1,4 @@
-name: CICD for Laravel 
+name: CICD for Laravel
 
 on:
   push:

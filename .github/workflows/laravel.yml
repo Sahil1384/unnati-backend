@@ -34,6 +34,7 @@ jobs:
           chmod 600 /home/runner/my-ssh-key.pem
           ssh -o StrictHostKeyChecking=no -i "$HOME/my-ssh-key.pem" "$USER_NAME@$HOSTNAME" '
               cd /home/ubuntu/ &&
+              rm -rf unnati-backend &&
               git clone https://github.com/Sahil1384/unnati-backend.git &&
               cd /home/ubuntu/unnati-backend &&
               echo "Installing Dependencies" &&

@@ -31,7 +31,7 @@ jobs:
         run: |
 
           echo "$PRIVATE_KEY" > "$HOME/my-ssh-key.pem"
-          chmod 400 /home/runner/my-ssh-key.pem
+          chmod 600 /home/runner/my-ssh-key.pem
           ssh -o StrictHostKeyChecking=no -i "$HOME/my-ssh-key.pem" "$USER_NAME@$HOSTNAME" '
               cd /home/ubuntu/ &&
               git clone https://github.com/Sahil1384/unnati-backend.git &&
@@ -47,5 +47,5 @@ jobs:
               php artisan config:cache &&
               php artisan db:seed &&
               sudo chmod -R 775 /home/ubuntu/unnati-backend &&
-              sudo chown -R unnati-root:root /home/ubuntu/unnati-backend
+              sudo chown -R unnati:root /home/ubuntu/unnati-backend
           '

@@ -19,7 +19,7 @@ jobs:
         with:
           ref: laravel
 
-       name: Set up Laravel ${{ matrix.php-version }}
+      - name: Set up Laravel ${{ matrix.php-version }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}

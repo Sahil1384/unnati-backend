@@ -1,4 +1,4 @@
-name: CICD for larvel app 
+name: CICD for larvel 
 
 on:
   push:

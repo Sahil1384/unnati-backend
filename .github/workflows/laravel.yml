@@ -20,7 +20,7 @@ jobs:
 
       - name: Install Composer dependencies
         run: composer install
-
+        
       - name: Deploy to your server using SSH
         uses: appleboy/ssh-action@master
         with:

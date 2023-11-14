@@ -45,5 +45,5 @@ jobs:
               php artisan config:cache &&
               php artisan db:seed &&
               sudo chmod -R 775 /home/ubuntu/unnati-backend &&
-              sudo chown -R unnati-backend:root /home/ubuntu/unnati-backend
+              sudo chown -R unnati-root:root /home/ubuntu/unnati-backend
           '

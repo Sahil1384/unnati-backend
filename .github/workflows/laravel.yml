@@ -1,36 +1,49 @@
-name: Laravel Deployment
+name: CICD for larvel
 
 on:
   push:
-    branches:
-      - main  # Replace with your main branch name
+    branches: [main]
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest  # Use an appropriate runner based on your requirements
+  run-backend-on-ec2:
+    name: Deploy backend
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: [8.2]
 
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up PHP
+       name: Set up Laravel ${{ matrix.php-version }}
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.0  # Adjust to your PHP version
+          php-version: ${{ matrix.php-version }}
 
-      - name: Install Composer dependencies
-        run: composer install
-        
-      - name: Deploy to your server using SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.YOUR_HOST }}
-          username: ${{ secrets.YOUR_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /path/to/your/laravel/app
-            git pull origin main  # Pull the latest changes from your repository
-            php artisan migrate --force  # Run database migrations
-            php artisan config:cache  # Cache configuration
-            php artisan route:cache   # Cache routes
-            sudo service nginx restart  # Restart Nginx (or your web server)
+      - name: SSH to instance
+        env:
+            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            HOSTNAME: ${{ secrets.SSH_HOST }}
+            USER_NAME: ${{secrets.USER_NAME}}
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > my-ssh-key.pem
+          chmod 600 my-ssh-key.pem
+          ssh -o StrictHostKeyChecking=no -i my-ssh-key.pem ${{ secrets.USER_NAME }}@${HOSTNAME} '
+              cd /home/ubuntu/ &&
+              git clone https://github.com/Sahil1384/unnati-backend.git &&
+              cd /home/ubuntu/unnati-backend &&
+              echo "Installing Dependencies"
+              composer install --no-interaction --optimize-autoloader --no-dev &&
+              php artisan key:generate &&
+              php artisan optimize:clear &&
+              php artisan cache:clear &&
+              php artisan route:cache &&
+              php artisan route:clear &&
+              php artisan view:clear &&
+              php artisan config:cache &&
+              php artisan db:seed &&
+              sudo chmod -R 775 /home/ubuntu/unnati-backend &&
+              sudo chown -R unnati-backend:root /home/ubuntu/unnati-backend
+          '

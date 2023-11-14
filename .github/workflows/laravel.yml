@@ -21,15 +21,12 @@ jobs:
       - name: Install Composer dependencies
         run: composer install
 
-      - name: Build assets (if needed)
-        run: npm install && npm run production
-
       - name: Deploy to your server using SSH
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.YOUR_HOST }}
           username: ${{ secrets.YOUR_USERNAME }}
-          key: ${{ secrets.YOUR_SSH_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /path/to/your/laravel/app
             git pull origin main  # Pull the latest changes from your repository

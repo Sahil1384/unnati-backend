@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
+        with:
+          ref: laravel
 
        name: Set up Laravel ${{ matrix.php-version }}
         uses: shivammathur/setup-php@v2
